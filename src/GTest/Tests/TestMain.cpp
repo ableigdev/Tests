@@ -10,6 +10,11 @@ namespace
 	{
 		return value % 2 == 0;
 	}
+
+	struct CompareString : public std::binary_function<std::string, std::string, bool>
+	{
+		// TODO: wriet operator()
+	};
 }
 
 TEST(IntervalFunction, VectorInsert)
@@ -112,3 +117,18 @@ TEST(RemoveIf, Set)
 	EXPECT_EQ(expectResult, v);
 	EXPECT_EQ(expectResult.size(), v.size());
 }
+
+TEST(SwapRemove, Vector)
+{
+	std::vector<int> v = { 3, 8, 1, 4 };
+
+	v.erase(std::remove(v.begin(), v.end(), 1), v.end());
+
+	EXPECT_EQ(v.capacity(), 4);
+
+	std::vector<int>(v).swap(v);
+
+	EXPECT_EQ(v.size(), 3);
+	EXPECT_EQ(v.capacity(), 3);
+}
+
