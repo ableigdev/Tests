@@ -4,6 +4,7 @@
 #include <set>
 #include <cstdlib>
 #include <ctime>
+#include <iterator>
 
 
 namespace
@@ -52,6 +53,7 @@ namespace
 			return value.a == 5;
 		}
 	};
+	
 }
 
 TEST(IntervalFunction, VectorInsert)
@@ -221,12 +223,34 @@ TEST(MapUpdate, Test)
 
 TEST(AdvanceDistance, Test)
 {
-	std::vector<int> v;
-	typedef std::vector<int>::iterator iter;
-	typedef std::vector<int>::const_iterator constIter;
+	std::vector<int> v = { 2, 4, 6, 8 };
+	std::vector<int>::iterator iter = v.begin();
+	std::vector<int>::const_iterator constIter = v.begin() + v.size() / 2;
 
-	constIter cIter;
-	iter i;
-	// TODO: coplete properies
+	EXPECT_EQ(*iter, 2);
+	EXPECT_EQ(*constIter, 6);
+
+	std::advance(iter, std::distance<std::vector<int>::const_iterator>(iter, constIter));
+
+	EXPECT_EQ(*iter, 6);
+}
+
+TEST(BaseFunction, Test)
+{
+	std::vector<int> v = { 4, 1, 8, 3, 7 };
+	std::vector<int>::iterator iter = v.begin() + 3;
+	std::vector<int>::reverse_iterator reverseIter = v.rbegin() + 3;
+
+	EXPECT_EQ(*iter, 3);
+	EXPECT_EQ(*reverseIter, 1);
+	EXPECT_EQ(*(--reverseIter).base(), 3);
+}
+
+TEST(TransformVector, Test)
+{
+	std::vector<int> v = { 4, 7, 2, 5, 9 };
+	std::vector<int> result;
+
+	// ToDo std::transform(v.begin(), v.end(), , back_inserter(v), transmogrify)
 }
 
