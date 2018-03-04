@@ -53,6 +53,21 @@ namespace
 			return value.a == 5;
 		}
 	};
+
+	bool func(int value)
+	{
+		return value % 2 == 0;
+	}
+
+	bool compareElements(int lhs, int rhs)
+	{
+		return lhs < rhs;
+	}
+
+	bool compareElements2(int value)
+	{
+		return value > 3 && value < 7;
+	}
 	
 }
 
@@ -250,7 +265,48 @@ TEST(TransformVector, Test)
 {
 	std::vector<int> v = { 4, 7, 2, 5, 9 };
 	std::vector<int> result;
+	std::vector<int> expectedResult = { 1, 0, 1, 0, 0 };
 
-	// ToDo std::transform(v.begin(), v.end(), , back_inserter(v), transmogrify)
+	std::transform(v.begin(), v.end(), std::back_inserter(result), func);
+
+	EXPECT_EQ(result, expectedResult);
+}
+
+TEST(PartialSort, Test)
+{
+	std::vector<int> v = { 4, 9, 12, 5, 8, 3, 9, 5, 1, 0, 7 };
+	std::vector<int> expectedResult = { 0, 1, 3, 4 };
+
+	std::partial_sort(v.begin(), v.begin() + 4, v.end(), compareElements);
+
+	std::vector<int> v2(v.begin(), v.begin() + 4);
+
+	EXPECT_EQ(v2, expectedResult);
+}
+
+TEST(NTHElement, Test)
+{
+	std::vector<int> v = { 4, 9, 12, 5, 8, 3, 9, 5, 1, 0, 7 };
+	std::vector<int> expectedResult = { 0, 1, 3, 4 };
+	std::vector<int> expectedResult2 = { 0, 1, 3, 4, 5, 5, 7, 8, 9, 9, 12 };
+
+	std::nth_element(v.begin(), v.begin() + 4, v.end(), compareElements);
+
+	std::vector<int> v2(v.begin(), v.begin() + 4);
+
+	EXPECT_EQ(v2, expectedResult);
+	EXPECT_EQ(v, expectedResult2);
+}
+
+TEST(Partition, Test)
+{
+	std::vector<int> v = { 4, 9, 12, 5, 8, 3, 9, 5, 1, 0, 7 };
+	std::vector<int> expectedResult = { 4, 5, 5 };
+
+	std::partition(v.begin(), v.end(), compareElements2);
+
+	std::vector<int> v2(v.begin(), v.begin() + 3);
+
+	EXPECT_EQ(v2, expectedResult);
 }
 
