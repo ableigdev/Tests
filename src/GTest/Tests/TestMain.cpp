@@ -5,6 +5,9 @@
 #include <cstdlib>
 #include <ctime>
 #include <iterator>
+#include <algorithm>
+#include <numeric>
+#include <functional>
 
 
 namespace
@@ -68,7 +71,49 @@ namespace
 	{
 		return value > 3 && value < 7;
 	}
-	
+
+	std::string::size_type sumLengthString(std::string::size_type sum, const std::string& str)
+	{
+		return sum + str.size();
+	}
+
+	struct AdaptFunctor : std::unary_function<int, bool>
+	{
+		bool operator()(int value) const
+		{
+			return value % 2 == 0;
+		}
+	};
+
+	class TestClass
+	{
+	public:
+		TestClass()
+			: value(0),
+			  statusObject(true)
+		{
+
+		}
+		~TestClass()
+		{
+
+		}
+
+		void testObject()
+		{
+			if (value == 0)
+				statusObject = false;
+		}
+
+		bool getStatus() const
+		{
+			return statusObject;
+		}
+
+	private:
+		int value;
+		bool statusObject;
+	};
 }
 
 TEST(IntervalFunction, VectorInsert)
@@ -309,4 +354,65 @@ TEST(Partition, Test)
 
 	EXPECT_EQ(v2, expectedResult);
 }
+
+TEST(Accumulate, Test)
+{
+	std::vector<double> v = { 0.033, 2.3, 6.1, 0.0034, 0.05, 0.043 };
+	double expectedResult = 8.5293999999999992;
+	double sum = 0.0;
+
+	sum = std::accumulate(v.begin(), v.end(), 0.0);
+
+	EXPECT_EQ(sum, expectedResult);
+}
+
+TEST(Accumulate, Test2)
+{
+	std::vector<std::string> v = { "test1", "test2", "test3453", "do" };
+	std::string::size_type expectedLength = 20;
+	
+	std::string::size_type actualLength = std::accumulate(v.begin(), v.end(), 0, sumLengthString);
+
+	EXPECT_EQ(expectedLength, actualLength);
+}
+
+TEST(FunctorAdapt, Test)
+{
+	std::vector<int> v = { 1, 5, 8, 3, 4, 2 };
+	std::vector<int>::iterator expect = v.begin();
+	std::vector<int>::iterator actual = std::find_if(v.begin(), v.end(), std::not1(AdaptFunctor()));
+
+	EXPECT_EQ(expect, actual);
+}
+
+TEST(MemFun, Test)
+{
+	TestClass testObj;
+	std::vector<TestClass*> v;
+	v.push_back(new TestClass);
+	v.push_back(new TestClass);
+	v.push_back(new TestClass);
+
+	std::vector<TestClass*> expect;
+	expect.push_back(new TestClass);
+	expect.push_back(new TestClass);
+	expect.push_back(new TestClass);
+
+	expect[0]->testObject();
+	expect[1]->testObject();
+	expect[2]->testObject();
+
+	std::for_each(v.begin(), v.end(), std::mem_fun(&TestClass::testObject));
+
+	EXPECT_EQ(expect[0]->getStatus(), v[0]->getStatus());
+	EXPECT_EQ(expect[1]->getStatus(), v[1]->getStatus());
+	EXPECT_EQ(expect[2]->getStatus(), v[2]->getStatus());
+
+	for (int i = 0; i < expect.size(); ++i)
+		delete expect[i];
+
+	for (int i = 0; i < v.size(); ++i)
+		delete v[i];
+}
+
 
