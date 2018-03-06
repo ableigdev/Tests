@@ -281,6 +281,19 @@ TEST(MapUpdate, Test)
 	EXPECT_EQ(m.size(), expectResult.size());
 }
 
+TEST(GetValueMap, Test)
+{
+	std::map<int, std::string> m;
+
+	m.insert(std::map<int, std::string>::value_type(4, "test"));
+	m.insert(std::map<int, std::string>::value_type(3, "test2"));
+	m.insert(std::map<int, std::string>::value_type(7, "test4"));
+
+	EXPECT_EQ(m[3], "test2");
+	EXPECT_EQ(m[4], "test");
+	EXPECT_EQ(m[7], "test4");
+}
+
 TEST(AdvanceDistance, Test)
 {
 	std::vector<int> v = { 2, 4, 6, 8 };
