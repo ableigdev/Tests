@@ -8,6 +8,7 @@
 #include <algorithm>
 #include <numeric>
 #include <functional>
+#include <memory>
 
 
 namespace
@@ -426,6 +427,21 @@ TEST(MemFun, Test)
 
 	for (int i = 0; i < v.size(); ++i)
 		delete v[i];
+}
+
+TEST(VectorSharedPtr, Test)
+{
+	std::vector<std::shared_ptr<int>> vec;
+	vec.reserve(3);
+
+	vec.push_back(std::shared_ptr<int>(new int(3)));
+	vec.push_back(std::shared_ptr<int>(new int(5)));
+	vec.push_back(std::shared_ptr<int>(new int(1)));
+
+	std::vector<std::shared_ptr<int>> vec2 = vec;
+
+	EXPECT_EQ(vec2, vec);
+	EXPECT_EQ(vec2.size(), vec.size());
 }
 
 
